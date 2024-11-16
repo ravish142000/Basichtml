@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'my-nginx-image'
         CONTAINER_NAME = 'my-nginx-container'
-        PORT = '9000:80'
+        PORT = '9000'
     }
 
     stages {
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d --name $CONTAINER_NAME -p $PORT $DOCKER_IMAGE"
+                sh "docker run -d --name $CONTAINER_NAME -p $PORT:80 $DOCKER_IMAGE"
             }
         }
 
