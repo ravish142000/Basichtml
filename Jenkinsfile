@@ -15,13 +15,13 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d --name my-nginx-container -p 8080:80 my-nginx-image'
+                sh 'docker run -d --name my-nginx-container -p 9000:80 my-nginx-image'
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh 'curl http://localhost:8080'
+                sh 'curl http://localhost:9000'
             }
         }
     }
