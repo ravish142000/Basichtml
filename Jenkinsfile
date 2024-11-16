@@ -1,46 +1,45 @@
 pipeline {
-    agent {
-        docker {
-            image 'nginx:alpine'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'my-nginx-image'
+        CONTAINER_NAME = 'my-nginx-container'
+        PORT = '9000:80'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                checkout([$class: 'GitSCM', 
-                         branches: [[name: 'main']], 
-                         extensions: [], 
-                         userRemoteConfigs: [[credentialsId: 'github-cred', 
-                                              url: 'https://github.com/ravish142000/Basichtml.git']]])
+                git branch: 'main',
+                    credentialsId: 'github-cred',
+                    url: 'https://github.com/ravish142000/Basichtml.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t my-nginx-image .'
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d --name my-nginx-container -p 9000:80 my-nginx-image'
+                sh "docker run -d --name $CONTAINER_NAME -p $PORT $DOCKER_IMAGE"
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh 'curl http://localhost:9000'
+                sh "curl http://localhost:$PORT"
             }
         }
     }
 
     post {
         always {
-            sh 'docker stop my-nginx-container'
-            sh 'docker rm my-nginx-container'
-            sh 'docker rmi my-nginx-image'
+            sh 'docker stop $CONTAINER_NAME'
+            sh 'docker rm $CONTAINER_NAME'
+            sh 'docker rmi $DOCKER_IMAGE'
         }
 
         failure {
