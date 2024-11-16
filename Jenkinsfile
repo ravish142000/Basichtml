@@ -7,7 +7,7 @@ stages {
                 extensions: [],
                 userRemoteConfigs: [[
                     credentialsId: 'github-cred',
-                    url: 'https://github.com/your-username/your-repo.git'
+                    url: 'https://github.com/ravish142000/Basichtml.git'
                 ]]
             ])
         }
